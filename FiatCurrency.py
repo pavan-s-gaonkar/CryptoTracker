@@ -1,6 +1,6 @@
 
 
-class BaseCurrency:
+class FiatCurrency:
     def __init__(self):
         self.data = []
         self.data.append("USD")

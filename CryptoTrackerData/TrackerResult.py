@@ -1,4 +1,4 @@
-class CryptoData:
+class TrackerResult:
     def __init__(self, a_crypto, a_fiat):
         self.crypto = a_crypto
         self.fiat = a_fiat

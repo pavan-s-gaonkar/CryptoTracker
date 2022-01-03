@@ -1,15 +1,14 @@
 import requests
-from BaseCurrency import BaseCurrency
-from CryptoData import CryptoData
-from TradingPairData import TradingPairData
+from FiatCurrency import FiatCurrency
+from CryptoTrackerData.TrackerResult import TrackerResult
+from CryptoTrackerData.TradingPair import TradingPair
 
 
-class BinanceExtractor(BaseCurrency):
-    def __init__(self):
+class BinanceAgent():
+    def __init__(self, a_fiatCurrencyObj):
         """ This is an init function that uses REST API from Binance to gather the list of
         supported crypto-currencies."""
-        BaseCurrency.__init__(self)
-        self.fiat_currency_list = self.get_supported_fiat_currency_info()
+        self.fiat_currency_list = a_fiatCurrencyObj.get_supported_fiat_currency_info()
         self.crypto_fiat_pair_list = self.get_supported_crypto_fiat_pairs()
         self.update_needed_crypto_fiat_pairs()
 
@@ -39,7 +38,7 @@ class BinanceExtractor(BaseCurrency):
         #print(resp.json()["symbols"])
 
         for symbol_entry in resp.json()["symbols"]:
-            trading_data = TradingPairData()
+            trading_data = TradingPair()
             for attribute, value in symbol_entry.items():
                 if attribute == "baseAsset":
                     trading_data.crypto = value
@@ -52,7 +51,7 @@ class BinanceExtractor(BaseCurrency):
         cryto_list = list(set(cryto_list))
         cryto_list.sort()
 
-        """ Following peice of code will order set of TradingPairData objects based on alphabetical order  """
+        """ Following peice of code will order set of TradingPair objects based on alphabetical order  """
         for cryto_entry in cryto_list:
             for temp_trading_pair_entry in temp_trading_pair_list:
                 if cryto_entry == temp_trading_pair_entry.get_crypt_name():
@@ -69,7 +68,7 @@ class BinanceExtractor(BaseCurrency):
 
     def get_status(self, crypto, fiat):
         """ This function uses REST API from Binance to get current price of crypto currency w.r.t base currency."""
-        result = CryptoData(crypto, fiat)
+        result = TrackerResult(crypto, fiat)
         resp = requests.get('https://api.binance.com/api/v3/ticker/price?symbol=' + crypto + fiat)
 
         for attribute, value in resp.json().items():
