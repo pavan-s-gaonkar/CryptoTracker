@@ -1,4 +1,4 @@
-class TradingPairData:
+class TradingPair:
     def __init__(self):
         self.crypto = ""
         self.fiat = ""
